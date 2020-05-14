@@ -10,6 +10,7 @@ function indent() {
 
 ENV_DIR=${3:-}
 ssh_key="$(cat $ENV_DIR/SSH_KEY)"
+ssh_hosts="$(cat $ENV_DIR/SSH_HOSTS)"
 
 if [ "$ssh_key" != "" ]; then
 	echo "-----> Running SSH private key setup"
@@ -18,13 +19,11 @@ if [ "$ssh_key" != "" ]; then
 	# home directory of the built machine. The symlink resolves the issue.
 	mkdir "$1/.ssh"
 	ln -s "$1/.ssh" "$HOME/.ssh"
-	echo "Writing to $HOME/.ssh/id_rsa" | indent
+	
 	echo "$ssh_key" | base64 --decode > "$HOME/.ssh/id_rsa"
 
-        echo "Writing to $HOME/.ssh/known_hosts" | indent
-	IFS=',' read -ra HOST <<< "$SSH_HOSTS"
+	IFS=',' read -ra HOST <<< "$ssh_hosts"
 	for i in "${HOST[@]}"; do
-		echo "Writing known host: $i" | indent
 		echo "$i" >> "$HOME/.ssh/known_hosts"
 	done
 
