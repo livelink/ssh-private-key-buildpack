@@ -22,7 +22,7 @@ if [ "$ssh_key" != "" ]; then
 
 	IFS=',' read -ra HOST <<< "$SSH_HOSTS"
 	for i in "${HOST[@]}"; do
-		ssh -oStrictHostKeyChecking=no -T $i 2>&1 | indent
+		echo "$i" >> "$HOME/.ssh/known_hosts"
 	done
 
 	exit 0
